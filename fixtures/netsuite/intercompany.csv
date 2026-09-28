@@ -1,0 +1,3 @@
+Internal ID,Reference,Subsidiary Internal ID,Counterparty Internal ID,Side,Currency,Amount,Due Date,Evidence
+170,IC-IMPORT,101,102,receivable,NZD,450,2026-10-05,archive/ic-170
+171,IC-IMPORT,102,101,payable,NZD,450,2026-10-05,archive/ic-171

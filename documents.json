@@ -1,11 +1,45 @@
 [
   {
-    "name": "example",
-    "title": "TODO(author): the first document this industry must produce",
-    "for_each": "select gen_random_uuid() as id, 'Example' as name",
-    "file": "name",
+    "name": "order",
+    "title": "Draft order confirmation / purchase order",
+    "for_each": "select id,name from orders where status<>'cancelled' order by name",
+    "file": "id",
     "sections": [
-      { "title": "Details", "sql": "select 'replace me' as item, $1::text as record_id" }
+      {
+        "title": "Order",
+        "sql": "select name,subsidiary,partner,kind,currency,due_date,status,value from v_orders where id=$1"
+      },
+      {
+        "title": "Lines",
+        "note": "Amounts exclude tax. Confirm delivery and tax treatment before issuing.",
+        "sql": "select i.name item,i.unit,l.quantity,l.completed,l.unit_price from order_lines l join items i on i.id=l.item_id where order_id=$1 order by i.name"
+      }
+    ]
+  },
+  {
+    "name": "intercompany",
+    "title": "Draft intercompany confirmation",
+    "for_each": "select id,name from intercompany where side='receivable' order by name",
+    "file": "id",
+    "sections": [
+      {
+        "title": "Counterparty confirmation",
+        "note": "Operational reconciliation, not a tax invoice or elimination journal.",
+        "sql": "select v.* from v_intercompany v join intercompany i on i.name=v.reference and i.currency=v.currency join subsidiaries s on s.id=i.subsidiary_id and s.name=v.seller where i.id=$1"
+      }
+    ]
+  },
+  {
+    "name": "retention",
+    "title": "Record retention review",
+    "for_each": "select id,name from subsidiaries order by name",
+    "file": "id",
+    "sections": [
+      {
+        "title": "Evidence register",
+        "note": "Confirm legal holds and longer obligations with the accountant.",
+        "sql": "select name,period_end,retain_until,archive_ref,last_backup from evidence where subsidiary_id=$1 order by name"
+      }
     ]
   }
 ]

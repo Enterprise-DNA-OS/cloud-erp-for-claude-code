@@ -1,0 +1,3 @@
+Internal ID,Document Number,Subsidiary Internal ID,Location Internal ID,Name Internal ID,Type,Currency,Due Date
+140,NS-SO-140,101,130,110,Sales Order,NZD,2026-10-05
+141,NS-PO-141,102,131,111,Purchase Order,AUD,2026-10-07

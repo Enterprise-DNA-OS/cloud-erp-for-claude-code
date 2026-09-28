@@ -1,13 +1,35 @@
 [
   {
     "name": "week",
-    "title": "This week",
-    "subtitle": "Cloud ERP for Claude Code: what needs attention, rendered by npm run view",
+    "title": "Dispatch and supplier week",
+    "subtitle": "Operational snapshot, not accounting statements",
     "sections": [
       {
-        "title": "Needs attention",
-        "note": "TODO(author): point this at the industry's attention view (overdue, stuck, quiet).",
-        "sql": "select 'replace me' as item, 'TODO(author)' as why"
+        "title": "Late or quiet",
+        "sql": "select name,subsidiary,kind,due_date,currency,remaining_value from v_orders where status='open' and (due_date<current_date or coalesce(last_contact,current_date-8)<current_date-7)"
+      },
+      {
+        "title": "Dispatch by warehouse",
+        "sql": "select * from v_dispatch order by due_date"
+      },
+      {
+        "title": "Reorder position",
+        "sql": "select * from v_stock order by subsidiary,item"
+      }
+    ]
+  },
+  {
+    "name": "group",
+    "title": "Group exceptions",
+    "subtitle": "Currencies stay separate. Intercompany records are reconciled, never posted.",
+    "sections": [
+      {
+        "title": "Intercompany reconciliation",
+        "sql": "select * from v_intercompany order by reference"
+      },
+      {
+        "title": "Open orders by entity",
+        "sql": "select subsidiary,currency,kind,sum(remaining_value) open_value from v_orders where status='open' group by subsidiary,currency,kind order by subsidiary,kind"
       }
     ]
   }
